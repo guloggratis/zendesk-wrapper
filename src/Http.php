@@ -40,7 +40,7 @@ class Http {
 
 		$uri = $client->getApiUrl() . $client->getApiBasePath() . $endPoint;
 
-		$header = array("Content-Type: application/json");
+		$header = array('Content-Type: application/json; charset=UTF-8');
 		if (isset($options['postFields']['contentType'])) {
 			$header = array("Content-Type: " . $options['postFields']['contentType']);
 		}
@@ -69,14 +69,14 @@ class Http {
 				curl_setopt($session, CURLOPT_POSTFIELDS, json_encode($options['postFields']));
 			}
 
-			curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($session, CURLOPT_HTTPHEADER, $header);
+			curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($session, CURLOPT_CONNECTTIMEOUT ,0);
 			curl_setopt($session, CURLOPT_TIMEOUT, 400); //timeout in seconds
 
 			$response 	= curl_exec($session);
 			$error      = curl_error($session);
-			$http_code  = curl_getinfo($session ,CURLINFO_HTTP_CODE);
+			$http_code  = curl_getinfo($session, CURLINFO_HTTP_CODE);
 
 			curl_close($session);
 		} catch (\Exception $e) {
@@ -85,7 +85,7 @@ class Http {
 		}
 
 		$result = array(
-			'response' => json_decode($response, 1),
+			'response' => json_decode($response, true),
 			'http_code' => $http_code
 		);
 

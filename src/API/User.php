@@ -33,17 +33,15 @@ class User extends Wrapper {
 		}
 
 		try {
-			$result = array('success' => 0);
-
 			$user = new Users($this->client);
 			$user->createOrUpdate($userData);
 
+			$result['meta']['status'] = $user->getStatusCode();
 			$response = $user->getResponse();
 			if (isset($response['user'])) {
 				$this->user = $response['user'];
 
-				$result = array(
-					'success' 	=> true,
+				$result['data'] = array(
 					'user_id' => $response['user']['id'],
 					'user_external_id' => $response['user']['external_id'],
 				);
@@ -52,6 +50,7 @@ class User extends Wrapper {
 					'title' 	=> $response['error']['title'],
 					'message' 	=> $response['error']['message'],
 					'hint' 		=> 'Check your config/zendesk.php file.',
+					'err' 		=> $response,
 				);
 			}
 
@@ -70,19 +69,15 @@ class User extends Wrapper {
 	 */
 	public function getById($userId) {
 		try {
-			$result = array('success' => 0);
-
 			$user = new Users($this->client);
 			$user->getUser(array('id' => $userId));
 
+			$result['meta']['status'] = $user->getStatusCode();
 			$response = $user->getResponse();
 			if (isset($response['user'])) {
 				$this->user = $response['user'];
+				$result['data'] = $response['user'];
 
-				$result = array(
-					'success' 	=> true,
-					'user' => $response['user']
-				);
 			} elseif (isset($response['error'])) {
 				$result['error'] = array(
 					'title' 	=> $response['error']['title'],
@@ -119,11 +114,10 @@ class User extends Wrapper {
 		}
 
 		try {
-			$result = array('success' => 0);
-
 			$userTickets = new UserTickets($this->client);
 			$userTickets->requested(array('id' => $this->user['id']));
 
+			$result['meta']['status'] = $userTickets->getStatusCode();
 			$response = $userTickets->getResponse();
 			if (isset($response['tickets'])) {
 				$totalTickets = 0;
@@ -144,8 +138,7 @@ class User extends Wrapper {
 					$totalTickets += 1;
 				}
 
-				$result = array(
-					'success' 				=> true,
+				$result['data'] = array(
 					'total_tickets' 		=> $totalTickets,
 					'total_new_tickets' 	=> $totalNewTickets,
 					'total_open_tickets' 	=> $totalOpenTickets,
@@ -177,19 +170,15 @@ class User extends Wrapper {
 	 */
 	public function getByEmail($email) {
 		try {
-			$result = array('success' => 0);
-
 			$user = new Users($this->client);
 			$user->search(array('query' => 'email:'.$email));
 
+			$result['meta']['status'] = $user->getStatusCode();
 			$response = $user->getResponse();
 			if (isset($response['users'])) {
 				$this->user = $response['users'][0];
 
-				$result = array(
-					'success' 	=> true,
-					'user' => $response['users'][0]
-				);
+				$result['data'] = $response['users'][0];
 			} elseif (isset($response['error'])) {
 				$result['error'] = array(
 					'title' 	=> $response['error']['title'],
@@ -216,19 +205,15 @@ class User extends Wrapper {
 	 */
 	public function getByExternalId($externalId) {
 		try {
-			$result = array('success' => 0);
-
 			$user = new Users($this->client);
 			$user->search(array('external_id' => $externalId));
 
+			$result['meta']['status'] = $user->getStatusCode();
 			$response = $user->getResponse();
 			if (isset($response['users'])) {
 				$this->user = $response['users'][0];
 
-				$result = array(
-					'success' 	=> true,
-					'user' => $response['users'][0]
-				);
+				$result['user'] = $response['users'][0];
 			} elseif (isset($response['error'])) {
 				$result['error'] = array(
 					'title' 	=> $response['error']['title'],

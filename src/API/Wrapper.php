@@ -22,8 +22,8 @@ class Wrapper {
 	 * @throws \Exception
 	 */
 	public function __construct() {
-		if (file_exists("../../config/zendesk.php")) {
-			$configuration = include("../../config/zendesk.php");
+		if (file_exists(dirname(__FILE__) . '/../../config/zendesk.php')) {
+			$configuration = include(dirname(__FILE__) . '/../../config/zendesk.php');
 		} else {
 			echo 'You need the configuration file /config/zendesk.php' . PHP_EOL;
 			exit;

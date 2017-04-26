@@ -69,15 +69,13 @@ class Ticket extends Wrapper {
 		}
 
 		try {
-			$result = array('success' => false);
-
 			$newTicket = new Tickets($this->client);
 			$newTicket->create($ticketData);
 
+			$result['meta']['status'] = $newTicket->getStatusCode();
 			$response = $newTicket->getResponse();
 			if (isset($response['ticket'])) {
-				$result = array(
-					'success' 	=> true,
+				$result['data'] = array(
 					'ticket_id' => $response['ticket']['id']
 				);
 			} elseif (isset($response['error'])) {
