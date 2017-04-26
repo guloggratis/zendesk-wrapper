@@ -26,7 +26,7 @@ class Wrapper {
 			$configuration = include(dirname(__FILE__) . '/../../config/zendesk.php');
 		} else {
 			echo 'You need the configuration file /config/zendesk.php' . PHP_EOL;
-			exit;
+			return false;
 		}
 
 		$this->client = new HttpClient($configuration['subdomain']);

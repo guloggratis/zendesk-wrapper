@@ -29,7 +29,7 @@ class User extends Wrapper {
 		if (!$this->validateUserFields($userData)) {
 			echo 'In order to create a user you need to have (correct) user data!' . PHP_EOL;
 			echo 'Check https://developer.zendesk.com/rest_api/docs/core/users#create-or-update-user for more information' . PHP_EOL;
-			exit;
+			return false;
 		}
 
 		try {
@@ -57,7 +57,7 @@ class User extends Wrapper {
 			return $result;
 		} catch (\Exception $e) {
 			echo $e->getMessage() . PHP_EOL;
-			exit;
+			return false;
 		}
 	}
 
@@ -89,7 +89,7 @@ class User extends Wrapper {
 			return $result;
 		} catch (\Exception $e) {
 			echo $e->getMessage() . PHP_EOL;
-			exit;
+			return false;
 		}
 	}
 
@@ -107,7 +107,7 @@ class User extends Wrapper {
 		if ($userId === '') {
 			if (empty($this->user)) {
 				echo __METHOD__ . ' you need a valid user, or a userId as param' . PHP_EOL;
-				exit;
+				return false;
 			}
 		} else {
 			$this->user['id'] = $userId;
@@ -155,7 +155,7 @@ class User extends Wrapper {
 			return $result;
 		} catch (\Exception $e) {
 			echo $e->getMessage() . PHP_EOL;
-			exit;
+			return false;
 		}
 	}
 
@@ -190,7 +190,7 @@ class User extends Wrapper {
 			return $result;
 		} catch (\Exception $e) {
 			echo $e->getMessage() . PHP_EOL;
-			exit;
+			return false;
 		}
 	}
 
@@ -225,7 +225,7 @@ class User extends Wrapper {
 			return $result;
 		} catch (\Exception $e) {
 			echo $e->getMessage() . PHP_EOL;
-			exit;
+			return false;
 		}
 	}
 

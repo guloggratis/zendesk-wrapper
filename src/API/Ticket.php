@@ -24,13 +24,13 @@ class Ticket extends Wrapper {
 		if (!isset($ticketData['requester']) || !$this->validateUserFields($ticketData['requester'])) {
 			echo 'In order to create a ticket you need to have (correct) requester data!' . PHP_EOL;
 			echo 'Check https://developer.zendesk.com/rest_api/docs/core/tickets#creating-a-ticket-with-a-new-requester for more information' . PHP_EOL;
-			exit;
+			return false;
 		}
 
 		if (!$this->validateTicketFields($ticketData)) {
 			echo 'In order to create a ticket you need to have (correct) ticket data!' . PHP_EOL;
 			echo 'Check samples/tickets/createTicket.php for more information' . PHP_EOL;
-			exit;
+			return false;
 		}
 
 		// check for attachment
@@ -59,7 +59,7 @@ class Ticket extends Wrapper {
 
 			} catch (\Exception $e) {
 				echo $e->getMessage() . PHP_EOL;
-				exit;
+				return false;
 			}
 		}
 
@@ -89,7 +89,7 @@ class Ticket extends Wrapper {
 			return $result;
 		} catch (\Exception $e) {
 			echo $e->getMessage() . PHP_EOL;
-			exit;
+			return false;
 		}
 	}
 
