@@ -14,16 +14,17 @@ use Zendesk\API\Ticket;
  */
 
 $ticketData = array(
+	'status' => 'new',
 	'type' => 'problem',
 	'priority' => 'normal',
 	'tags'  => array('demo', 'testing', 'api', 'zendesk'),
-	'subject'  => 'Hello, I think I have a problem.',
+	'subject'  => 'This is a new issue.',
 	'comment'  => array(
 		'body' => 'I am creating a ticket in order to test the zendesk api.'
 	),
 	'requester' => array(
 		'name' => 'Api Test User',
-		'email' => 'email@example.com";'
+		'email' => 'email@example.com',
 	),
 	// comment out next line to create ticket with attachment
 	//'attachment' => getcwd() . '/sample-logo.jpg',

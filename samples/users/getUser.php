@@ -1,6 +1,6 @@
 <?php
 /**
- * Returns user data based on the email or external id
+ * Returns user data based on the email or user id
  *
  * getUser.php
  * @author: Marco Martins <mapma@fynskemedier.dk>
@@ -13,13 +13,10 @@ use Zendesk\API\User;
 
 $userId 		= "123456";
 $userEmail 		= "email@example.com";
-$userExternalId = "12345";
 
 $user = new User();
-
 $result = $user->getById($userId);
-//$result = $user->getByEmail($email);
-//$result = $user->getByExternalId($externalId);
+//$result = $user->getByEmail($userEmail);
 
 echo '<pre>';
 print_r($result);

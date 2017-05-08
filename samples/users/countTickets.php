@@ -10,7 +10,6 @@ use Zendesk\API\User;
 
 $userId 		= '123456';
 $userEmail 		= 'email@example.com';
-$userExternalId = '12345';
 
 $user = new User();
 $result = $user->countTickets($userId);

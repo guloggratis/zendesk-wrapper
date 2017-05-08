@@ -43,13 +43,30 @@ class Tickets extends ResourceAbstract {
 
 
 	/**
+	 * Updates a ticket
+	 *
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	public function update(array $params = array()) {
+		$route = $this->getRoute(__FUNCTION__, $params);
+
+		$result = $this->client->put($route, array('ticket' => $params));
+
+		$this->setResponse($result['response']);
+		$this->setStatusCode($result['http_code']);
+	}
+
+
+	/**
 	 * Declares routes to be used by this resource.
 	 */
 	protected function setUpRoutes() {
 		parent::setUpRoutes();
 
 		$this->setRoutes(array(
-			'create'	=> 'tickets.json'
+			'create'	=> 'tickets.json',
+			'update'	=> 'tickets/{id}.json'
 		));
 	}
 }

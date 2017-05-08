@@ -193,40 +193,4 @@ class User extends Wrapper {
 			return false;
 		}
 	}
-
-	/**
-	 * NOTE: only use this method if you don't have a Zendesk user id
-	 *		 in that case use countTickets()
-	 *
-	 * Returns user by external id
-	 *
-	 * @param string $externalId
-	 * @return array
-	 */
-	public function getByExternalId($externalId) {
-		try {
-			$user = new Users($this->client);
-			$user->search(array('external_id' => $externalId));
-
-			$result['meta']['status'] = $user->getStatusCode();
-			$response = $user->getResponse();
-			if (isset($response['users'])) {
-				$this->user = $response['users'][0];
-
-				$result['user'] = $response['users'][0];
-			} elseif (isset($response['error'])) {
-				$result['error'] = array(
-					'title' 	=> $response['error']['title'],
-					'message' 	=> $response['error']['message'],
-					'hint' 		=> 'Check your config/zendesk.php file.',
-				);
-			}
-
-			return $result;
-		} catch (\Exception $e) {
-			echo $e->getMessage() . PHP_EOL;
-			return false;
-		}
-	}
-
 }
