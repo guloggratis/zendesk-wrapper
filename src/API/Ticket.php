@@ -117,6 +117,39 @@ class Ticket extends Wrapper {
 	}
 
 	/**
+	 * Imports tickets
+	 *
+	 * @param array $ticketsData
+	 * @return array
+	 */
+	public function import($ticketsData) {
+		try {
+			$newTicket = new Tickets($this->client);
+			$newTicket->import($ticketsData);
+
+			$result['meta']['status'] = $newTicket->getStatusCode();
+			$response = $newTicket->getResponse();
+			if (isset($response['ticket'])) {
+				$result['data'] = array(
+					'ticket_id' => $response['ticket']['id']
+				);
+			} elseif (isset($response['error'])) {
+				$result['error'] = array(
+					'title' 	=> $response['error']['title'],
+					'message' 	=> $response['error']['message'],
+					'err' 		=> $response['error'],
+					'hint' 		=> 'Check your config/zendesk.php file.',
+				);
+			}
+
+			return $result;
+		} catch (\Exception $e) {
+			echo $e->getMessage() . PHP_EOL;
+			return false;
+		}
+	}
+
+	/**
 	 * Adds attachments to ticket
 	 *
 	 * @param array $ticketData

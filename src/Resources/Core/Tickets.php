@@ -57,6 +57,21 @@ class Tickets extends ResourceAbstract {
 		$this->setStatusCode($result['http_code']);
 	}
 
+	/**
+	 * Imports tickets
+	 *
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	public function import(array $params = array()) {
+		$route = $this->getRoute(__FUNCTION__, $params);
+
+		$result = $this->client->post($route, array('ticket' => $params));
+
+		$this->setResponse($result['response']);
+		$this->setStatusCode($result['http_code']);
+	}
+
 
 	/**
 	 * Declares routes to be used by this resource.
@@ -66,7 +81,8 @@ class Tickets extends ResourceAbstract {
 
 		$this->setRoutes(array(
 			'create'	=> 'tickets.json',
-			'update'	=> 'tickets/{id}.json'
+			'update'	=> 'tickets/{id}.json',
+			'import'	=> 'imports/tickets.json'
 		));
 	}
 }
