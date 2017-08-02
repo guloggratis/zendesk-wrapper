@@ -64,9 +64,6 @@ class Wrapper {
 		if (!isset($ticketFields["type"]) || empty($ticketFields["type"])) {
 			return false;
 		}
-		if (!isset($ticketFields["priority"]) || empty($ticketFields["priority"])) {
-			return false;
-		}
 		if (!isset($ticketFields["subject"]) || empty($ticketFields["subject"])) {
 			return false;
 		}
