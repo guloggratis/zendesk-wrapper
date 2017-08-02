@@ -61,9 +61,6 @@ class Wrapper {
 	 * @return bool
 	 */
 	public function validateTicketFields($ticketFields = array()) {
-		if (!isset($ticketFields["type"]) || empty($ticketFields["type"])) {
-			return false;
-		}
 		if (!isset($ticketFields["subject"]) || empty($ticketFields["subject"])) {
 			return false;
 		}
