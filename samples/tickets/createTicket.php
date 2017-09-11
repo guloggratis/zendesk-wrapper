@@ -26,8 +26,14 @@ $ticketData = array(
 		'name' => 'Api Test User',
 		'email' => 'email@example.com',
 	),
-	// comment out next line to create ticket with attachment
-	//'attachment' => getcwd() . '/sample-logo.jpg',
+	// comment out next lines to create ticket with attachment
+	/*
+	'attachment' => array(
+		'path' => getcwd() . '/sample-logo.jpg',
+		'type' => 'image/jpg;',
+		'name' => 'sample-logo'
+	),
+	*/
 );
 
 $ticket = new Ticket();

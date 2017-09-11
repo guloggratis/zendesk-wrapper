@@ -39,6 +39,8 @@ class Ticket extends Wrapper {
 			$attachmentToken = $this->addAttachment($ticketData);
 		}
 
+		$result['token'] = $attachmentToken;
+
 		// set the attachment token to the ticket request
 		if (!empty($ticketData['attachment']) && $attachmentToken) {
 			$ticketData['comment']['uploads'] = $attachmentToken;
@@ -159,9 +161,9 @@ class Ticket extends Wrapper {
 		$attachmentToken = false;
 		try {
 			$attachmentData = array(
-				'file' => $ticketData['attachment'],
-				'type' => mime_content_type($ticketData['attachment']),
-				'name' => basename($ticketData['attachment']),
+				'file' => $ticketData['attachment']['path'],
+				'type' => $ticketData['attachment']['type'],
+				'name' => $ticketData['attachment']['name'],
 			);
 
 			$attachment = new Attachments($this->client);
