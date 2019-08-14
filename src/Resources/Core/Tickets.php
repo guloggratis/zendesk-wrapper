@@ -57,6 +57,21 @@ class Tickets extends ResourceAbstract {
 		$this->setStatusCode($result['http_code']);
 	}
 
+
+	/**
+	 * Updates a ticket
+	 *
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	public function updateMany(array $params = array()) {
+		$route = $this->getRoute(__FUNCTION__, $params);
+		$result = $this->client->put($route, array('ticket' => $params));
+
+		$this->setResponse($result['response']);
+		$this->setStatusCode($result['http_code']);
+	}
+
 	/**
 	 * Imports tickets
 	 *
@@ -80,9 +95,10 @@ class Tickets extends ResourceAbstract {
 		parent::setUpRoutes();
 
 		$this->setRoutes(array(
-			'create'	=> 'tickets.json',
-			'update'	=> 'tickets/{id}.json',
-			'import'	=> 'imports/tickets.json'
+			'create'	 => 'tickets.json',
+			'update'	 => 'tickets/{id}.json',
+			'updateMany' => 'tickets/update_many.json?ids={ids}',
+			'import'	 => 'imports/tickets.json'
 		));
 	}
 }

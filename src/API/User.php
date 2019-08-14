@@ -94,6 +94,47 @@ class User extends Wrapper {
 	}
 
 	/**
+	 * Gets the tickets submitted by the user
+	 *
+	 * @param string $userId The user id in zendesk
+	 * @return array
+	 */
+	public function getTickets($userId = '') {
+		if ($userId === '') {
+			if (empty($this->user)) {
+				echo __METHOD__ . ' you need a valid user, or a userId as param' . PHP_EOL;
+				return false;
+			}
+		} else {
+			$this->user['id'] = $userId;
+		}
+
+		try {
+			$userTickets = new UserTickets($this->client);
+			$userTickets->requested(array('id' => $this->user['id']));
+
+			$result['meta']['status'] = $userTickets->getStatusCode();
+			$response = $userTickets->getResponse();
+			if (isset($response['tickets'])) {
+				$result['data'] = array(
+					'tickets' 		=> $response['tickets']
+				);
+			} elseif (isset($response['error'])) {
+				$result['error'] = array(
+					'title' 	=> $response['error']['title'],
+					'message' 	=> $response['error']['message'],
+					'hint' 		=> 'Check your config/zendesk.php file.',
+				);
+			}
+
+			return $result;
+		} catch (\Exception $e) {
+			echo $e->getMessage() . PHP_EOL;
+			return false;
+		}
+	}
+
+	/**
 	 * Returns number of tickets submitted by the user
 	 * 		- total
 	 * 		- new
@@ -185,6 +226,77 @@ class User extends Wrapper {
 					'message' 	=> $response['error']['message'],
 					'hint' 		=> 'Check your config/zendesk.php file.',
 				);
+			}
+
+			return $result;
+		} catch (\Exception $e) {
+			echo $e->getMessage() . PHP_EOL;
+			return false;
+		}
+	}
+
+	/**
+	 * Deletes a user
+	 *
+	 * @param string $userId The user id in zendesk
+	 * @param booelan $permanently <false> permanently delete the user
+	 * @return array
+	 */
+	public function delete($userId = '', $permanently = false) {
+		try {
+
+			$ticketClient = new Ticket($this->client);
+			$userClient = new Users($this->client);
+
+			// get a user's tickets
+			$result = $this->getTickets($userId);
+			if (($result["meta"]["status"] == 200) and isset($result["data"]["tickets"])) {
+				// make a list of tickets that need to be forcefully closed
+				$ids = array();
+				foreach ($result["data"]["tickets"] as $ticket) {
+					array_push($ids, $ticket["id"]);
+				}
+			}
+
+			if (count($ids)) {
+				// bulk close the tickets
+				$ticketData = array(
+					"status" => "closed",
+					"ids" => join(",", $ids)
+				);
+				$result = $ticketClient->bulkUpdate($ticketData);
+			}
+
+			$attempts = 1;
+
+			// there is a race condition between the bulkUpdate of tickets and hte user deletion
+			// we make multiple attempts, waiting a bit more in between each of them, up to a max number of tries
+
+			while($attempts <= 5) {
+				// delete the user
+				if (!$permanently) {
+					$userClient->deleteUser(array('id' => $userId));
+				} else {
+					$userClient->permanentlyDeleteUser(array('id' => $userId));
+				}
+				$result['meta']['status'] = $userClient->getStatusCode();
+				$response = $userClient->getResponse();
+				if ($userClient->getStatusCode() == 200) {
+					break;
+				} else {
+					sleep (2 * $attempts);
+				}
+				$attempts++;
+			}
+
+			if (isset($response['error'])) {
+				$result['error'] = array(
+					'title' 	=> $response['error'],
+					'message' 	=> $response['description'],
+					'err' 		=> $response,
+				);
+			} else {
+				$result['data'] = $response;
 			}
 
 			return $result;
