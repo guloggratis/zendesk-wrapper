@@ -11,6 +11,7 @@ $configuration = array(
 	'subdomain' => 'my-sub-domain',
 	'username' 	=> 'my-user-name',
 	'token' 	=> 'my-token-12345',
+	'apiUrl'    => 'my-api-url-if-any',
 );
 
 return $configuration;
