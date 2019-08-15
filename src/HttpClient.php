@@ -58,15 +58,27 @@ class HttpClient {
 	 * @param int $port
 	 */
 	public function __construct($subdomain, $username = '', $scheme = "https", $hostname = "zendesk.com", $port = 443) {
+		if (file_exists(dirname(__FILE__) . '/../config/zendesk.php')) {
+			$configuration = include(dirname(__FILE__) . '/../config/zendesk.php');
+		} else {
+			echo 'You need the configuration file /config/zendesk.php' . PHP_EOL;
+			return false;
+		}
+
 		$this->subdomain = $subdomain;
 		$this->hostname  = $hostname;
 		$this->scheme    = $scheme;
 		$this->port      = $port;
 
-		if (empty($subdomain)) {
-			$this->apiUrl = "$scheme://$hostname:$port/";
+		if ($configuration['apiUrl']) {
+			// Because of updating TLS
+			$this->apiUrl = $configuration['apiUrl'];
 		} else {
-			$this->apiUrl = "$scheme://$subdomain.$hostname:$port/";
+			if (empty($subdomain)) {
+				$this->apiUrl = "$scheme://$hostname:$port/";
+			} else {
+				$this->apiUrl = "$scheme://$subdomain.$hostname:$port/";
+			}
 		}
 	}
 
