@@ -7,6 +7,7 @@ namespace Zendesk\API;
  */
 use Zendesk\Resources\Core\Tickets;
 use Zendesk\Resources\Core\Attachments;
+use Zendesk\Resources\Core\Users;
 
 /**
  * Class Ticket
@@ -100,6 +101,57 @@ class Ticket extends Wrapper {
 			$result['meta']['status'] = $newTicket->getStatusCode();
 			$response = $newTicket->getResponse();
 			if (isset($response['ticket'])) {
+				$result['data'] = array(
+					'ticket_id' => $response['ticket']['id']
+				);
+			} elseif (isset($response['error'])) {
+				$result['error'] = array(
+					'title' 	=> $response['error']['title'],
+					'message' 	=> $response['error']['message'],
+					'hint' 		=> 'Check your config/zendesk.php file.',
+				);
+			}
+
+			return $result;
+		} catch (\Exception $e) {
+			echo $e->getMessage() . PHP_EOL;
+			return false;
+		}
+	}
+
+
+
+	/**
+	 * Deletes a user
+	 *
+	 * @param array $ticketData Update payload
+	 * @return array
+	 */
+	public function bulkUpdate($ticketData) {
+		if (!isset($ticketData['ids'])) {
+			echo 'In order to bulk update tickets you need to have provide their "ids"' . PHP_EOL;
+			return false;
+		}
+
+		// check for attachment
+		$attachmentToken = false;
+		if (!empty($ticketData['attachment'])) {
+			$attachmentToken = $this->addAttachment($ticketData);
+		}
+
+		// set the attachment token to the ticket request
+		if (!empty($ticketData['attachment']) && $attachmentToken) {
+			$ticketData['comment']['uploads'] = $attachmentToken;
+		}
+
+		try {
+			$client = new Tickets($this->client);
+			$client->updateMany($ticketData);
+
+			$result['meta']['status'] = $client->getStatusCode();
+			$response = $client->getResponse();
+			if (isset($response['ticket'])) {
+				die(var_dump($response));
 				$result['data'] = array(
 					'ticket_id' => $response['ticket']['id']
 				);

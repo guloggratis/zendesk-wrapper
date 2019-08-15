@@ -61,6 +61,36 @@ class Users extends ResourceAbstract {
 	}
 
 	/**
+	 * Deletes a user in Zendesk based on his Zendesk id
+	 *
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	public function deleteUser(array $params = array()) {
+		$route = $this->getRoute(__FUNCTION__, $params);
+
+		$result = $this->client->delete($route, $params);
+
+		$this->setResponse($result['response']);
+		$this->setStatusCode($result['http_code']);
+	}
+
+	/**
+	 * Permanently deletes a user in Zendesk based on his Zendesk id
+	 *
+	 * @param array $params
+	 * @throws \Exception
+	 */
+	public function permanentlyDeleteUser(array $params = array()) {
+		$route = $this->getRoute(__FUNCTION__, $params);
+
+		$result = $this->client->delete($route, $params);
+
+		$this->setResponse($result['response']);
+		$this->setStatusCode($result['http_code']);
+	}
+
+	/**
 	 * Declares routes to be used by this resource.
 	 */
 	protected function setUpRoutes() {
@@ -70,6 +100,8 @@ class Users extends ResourceAbstract {
 			'createOrUpdate'        => 'users/create_or_update.json',
 			'search'             	=> 'users/search.json',
 			'getUser'  				=> 'users/{id}.json',
+			'deleteUser'  			=> 'users/{id}.json',
+			'permanentlyDeleteUser' => 'deleted_users/{id}.json',
 		));
 	}
 }
